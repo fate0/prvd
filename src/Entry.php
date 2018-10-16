@@ -7,13 +7,7 @@ if (!extension_loaded('xmark')) {
 }
 
 
-define("PRVD_FUZZ_DSN", "");
-define("PRVD_SENTRY_DSN", "");
-define("PRVD_TAINT_ENABLE", true);
 define("PRVD_RENAME_PREFIX", "prvd_");
-define("PRVD_TANZI", "xtanzi");
-define("PRVD_LOG_FILE", "/tmp/xmark.log");
-
 
 $prvd_sentry_client = null;
 $prvd_fuzz_client = null;
@@ -32,6 +26,7 @@ function prvd_get_function($funcname) {
 
 $prvd_dirname = prvd_get_function("dirname");
 define('PRVD_ABSPATH', $prvd_dirname( __FILE__ ) . '/' );
+require(PRVD_ABSPATH."Config.php");
 require(PRVD_ABSPATH."Utils.php");
 
 
