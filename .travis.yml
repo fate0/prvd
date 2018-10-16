@@ -1,0 +1,23 @@
+language: php
+
+php:
+  - 7.0
+  - 7.1
+  - 7.2
+  - nightly
+
+matrix:
+  allow_failures:
+    - php: nightly
+
+services:
+  - mysql
+  - postgresql
+
+before_script:
+  - git clone https://github.com/fate0/xmark.git
+  - cd xmark && phpize && ./configure && make && cd ..
+  - mv ./xmark/modules ./modules
+  - composer install
+
+script: php -n -c php.ini ./vendor/bin/phpunit -c phpunit.xml

@@ -1,0 +1,10 @@
+# Byte-compiled / optimized / DLL files
+.idea/
+__pycache__/
+*.py[cod]
+*$py.class
+.DS_Store
+site/
+vendor/
+modules/
+tools/

@@ -1,0 +1,23 @@
+{
+  "name": "fate0/prvd",
+  "type": "project",
+  "description": "PHP Runtime Vulnerability Detection",
+  "license": "BSD-3-Clause",
+
+  "authors": [
+    {
+      "name": "fate0",
+      "email": "fate0@fatezero.org",
+      "homepage": "http://www.fatezero.org"
+    }
+  ],
+
+  "require-dev": {
+    "phpunit/phpunit": "*"
+  },
+
+  "require": {
+    "php": "^7.0",
+    "sentry/sentry": "*"
+  }
+}
