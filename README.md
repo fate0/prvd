@@ -19,11 +19,17 @@ PHP 动态漏洞检测
 git clone git@github.com:fate0/prvd.git /data/prvd
 ```
 
-2. 下载编译 xmark
+2. 安装依赖
+
+``` sh
+composer install
+```
+
+3. 下载编译 xmark
 
 * [install xmark](https://github.com/fate0/xmark)
 
-3. 更改 php.ini 配置文件
+4. 更改 php.ini 配置文件
 
 * `auto_prepend_file` 配置成 `/data/prvd/src/Entry.php`
 * `extension` 配置成 `xmark.so` 路径
@@ -31,7 +37,7 @@ git clone git@github.com:fate0/prvd.git /data/prvd
 
 ### 配置
 
-使用编辑器打开 
+使用编辑器打开 `/data/prvd/src/Config.php`
 
 ``` php
 define("PRVD_FUZZ_DSN", "");                    // fuzz dsn 地址
