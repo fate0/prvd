@@ -1,7 +1,9 @@
 FROM php:7.2-apache
 MAINTAINER fate0 <fate0@fatezero.org>
 
-RUN echo 'deb http://mirrors.aliyun.com/debian/ stretch main non-free contrib' > /etc/apt/sources.list
+
+# 注释为中国区域使用的源
+# RUN echo 'deb http://mirrors.aliyun.com/debian/ stretch main non-free contrib' > /etc/apt/sources.list
 
 RUN apt-get update && \
     apt-get install -y && \
@@ -25,7 +27,7 @@ RUN apt-get update && \
     mv DVWA-master/* /var/www/html/ && \
     chmod -R 777 /var/www/html/ && \
     curl --silent --show-error https://getcomposer.org/installer | php && \
-    COMPOSER_ALLOW_SUPERUSER=1 php composer.phar config repo.packagist composer https://packagist.phpcomposer.com -d /data/prvd/ && \
+#    COMPOSER_ALLOW_SUPERUSER=1 php composer.phar config repo.packagist composer https://packagist.phpcomposer.com -d /data/prvd/ && \
     COMPOSER_ALLOW_SUPERUSER=1 php composer.phar install -d /data/prvd/ --no-dev && \
     rm composer.phar \
     && \
