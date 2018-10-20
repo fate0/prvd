@@ -14,6 +14,7 @@ matrix:
 services:
   - mysql
   - postgresql
+  - docker
 
 before_script:
   - git clone https://github.com/fate0/xmark.git
@@ -21,4 +22,11 @@ before_script:
   - mv ./xmark/modules ./modules
   - composer install
 
-script: php -n -c php.ini ./vendor/bin/phpunit -c phpunit.xml
+script:
+  - php -n -c php.ini ./vendor/bin/phpunit -c phpunit.xml
+  - docker build -t prvd-dvwa:latest ./dvwa
+  - docker tag prvd-dvwa:latest fate0/prvd-dvwa:latest
+
+after_success:
+  - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+  - docker push fate0/prvd-dvwa:latest
