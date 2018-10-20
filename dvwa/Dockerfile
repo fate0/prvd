@@ -5,8 +5,9 @@ MAINTAINER fate0 <fate0@fatezero.org>
 # 注释为中国区域使用的源
 # RUN echo 'deb http://mirrors.aliyun.com/debian/ stretch main non-free contrib' > /etc/apt/sources.list
 
-RUN apt-get update && \
-    apt-get install -y && \
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
     debconf-utils && \
     echo mariadb-server mysql-server/root_password password vulnerables | debconf-set-selections && \
