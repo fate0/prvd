@@ -35,6 +35,7 @@ prvd_xmark($_GET, true);
 prvd_xmark($_POST, true);
 prvd_xmark($_COOKIE, true);
 prvd_xmark($_FILES, true);
+prvd_xmark($_REQUEST, true);
 
 foreach ($_SERVER as $key => &$value) {
     if (stripos($key, 'HTTP_') === 0) {
