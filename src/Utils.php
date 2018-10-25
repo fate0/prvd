@@ -351,6 +351,7 @@ $prvd_translate_lang = array(
     "Cross Site Scripting" => "跨站脚本攻击",
     "File Inclusion" => "文件包含",
     "Arbitrary File Access" => "任意文件读取",
+    "Arbitrary File Upload" => "任意文件上传",
     "Arbitrary File Write" => "任意文件写入",
     "Arbitrary File Delete" => "任意文件删除",
     "Directory Traversal" => "目录遍历",
