@@ -16,7 +16,7 @@ PHP 动态漏洞检测
 1. git clone 到一个非 web 目录下，假设目录为 `/data/prvd`
 
 ``` sh
-git clone git@github.com:fate0/prvd.git /data/prvd
+git clone https://github.com/fate0/prvd.git /data/prvd
 ```
 
 2. 安装依赖
@@ -40,12 +40,33 @@ composer install
 使用编辑器打开 `/data/prvd/src/Config.php`
 
 ``` php
-define("PRVD_FUZZ_DSN", "");                    // fuzz dsn 地址
+define("PRVD_FUZZER_DSN", "");                  // fuzzer dsn 地址
 define("PRVD_SENTRY_DSN", "");                  // sentry dsn 地址
 define("PRVD_TAINT_ENABLE", true);              // 是否启用 taint 模式
 define("PRVD_TANZI", "xtanzi");                 // payload 关键字
 define("PRVD_LOG_FILE", "/data/prvd/prvd.log"); // log 文件
 ```
+
+前往 [https://sentry.io](https://sentry.io) 注册一个账号，或者自建一套 sentry 服务
+
+### dvwa
+
+可以使用 docker 体验一下 prvd
+
+```sh
+docker pull fate0/prvd-dvwa
+docker run -d -e "PRVD_SENTRY_DSN={YOUR_SENTRY_DSN}" -p 80:80 fate0/prvd-dvwa
+```
+
+可设置的环境变量有
+
+* `PRVD_FUZZER_DSN`
+* `PRVD_SENTRY_DSN`
+* `PRVD_TAINT_ENABLE`
+* `PRVD_TANZI`
+
+
+更多关于 `prvd-dvwa` 可以看[这里](https://github.com/fate0/prvd/blob/master/dvwa/README.md)
 
 ### 原理
 

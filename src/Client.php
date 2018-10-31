@@ -16,7 +16,7 @@ class PRVD_Sentry_Client extends Raven_Client
     }
 }
 
-class PRVD_Fuzz_Client extends Raven_Client
+class PRVD_Fuzzer_Client extends Raven_Client
 {
     public function __construct($options_or_dsn = null, $options = array())
     {

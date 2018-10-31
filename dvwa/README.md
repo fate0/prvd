@@ -16,7 +16,7 @@ docker run -d -e "PRVD_SENTRY_DSN={YOUR_SENTRY_DSN}" -p 80:80 fate0/prvd-dvwa
 
 可设置的环境变量有
 
-* `PRVD_FUZZ_DSN`
+* `PRVD_FUZZER_DSN`
 * `PRVD_SENTRY_DSN`
 * `PRVD_TAINT_ENABLE`
 * `PRVD_TANZI`

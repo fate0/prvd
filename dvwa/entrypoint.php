@@ -2,7 +2,7 @@
 
 system("service mysql start");
 
-$PRVD_FUZZ_DSN = getenv("PRVD_FUZZ_DSN");
+$PRVD_FUZZER_DSN = getenv("PRVD_FUZZER_DSN");
 $PRVD_SENTRY_DSN = getenv("PRVD_SENTRY_DSN");
 $PRVD_TAINT_ENABLE = getenv("PRVD_TAINT_ENABLE");
 $PRVD_TANZI = getenv("PRVD_TANZI");
@@ -11,9 +11,9 @@ $config_file = '/data/prvd/src/Config.php';
 
 $content = file_get_contents($config_file);
 
-if ($PRVD_FUZZ_DSN)
-    $content = str_replace('define("PRVD_FUZZ_DSN", "")',
-        'define("PRVD_FUZZ_DSN", "'.addslashes($PRVD_FUZZ_DSN).'")', $content);
+if ($PRVD_FUZZER_DSN)
+    $content = str_replace('define("PRVD_FUZZER_DSN", "")',
+        'define("PRVD_FUZZER_DSN", "'.addslashes($PRVD_FUZZER_DSN).'")', $content);
 
 if ($PRVD_SENTRY_DSN)
     $content = str_replace('define("PRVD_SENTRY_DSN", "")',

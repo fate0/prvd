@@ -10,7 +10,7 @@ if (!extension_loaded('xmark')) {
 define("PRVD_RENAME_PREFIX", "prvd_");
 
 $prvd_sentry_client = null;
-$prvd_fuzz_client = null;
+$prvd_fuzzer_client = null;
 
 
 function prvd_get_function($funcname) {
@@ -59,10 +59,10 @@ require(PRVD_ABSPATH."../vendor/autoload.php");
 require(PRVD_ABSPATH."Client.php");
 
 $prvd_sentry_client = new PRVD_Sentry_Client(PRVD_SENTRY_DSN);
-$prvd_fuzz_client = new PRVD_Fuzz_Client(PRVD_FUZZ_DSN);
+$prvd_fuzzer_client = new PRVD_Fuzzer_Client(PRVD_FUZZER_DSN);
 
 
 // 如果 header 信息不是来源于 fuzzer，那就发送相关信息给 fuzzer
-if (PRVD_FUZZ_DSN && !isset($_SERVER['HTTP_PRVD_FUZZ'])) {
-    $prvd_fuzz_client->captureRequest();
+if (PRVD_FUZZER_DSN && !isset($_SERVER['HTTP_PRVD_FUZZER'])) {
+    $prvd_fuzzer_client->captureRequest();
 }
