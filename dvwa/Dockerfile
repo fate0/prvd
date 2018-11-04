@@ -34,7 +34,7 @@ RUN apt-get clean && \
     && \
     mv $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini && \
     docker-php-ext-install -j$(nproc) iconv && \
-	docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && \
+    docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && \
     docker-php-ext-install gd mysqli pdo pdo_mysql && \
     docker-php-ext-configure /data/xmark --enable-xmark && \
     docker-php-ext-install /data/xmark && \
