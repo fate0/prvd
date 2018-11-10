@@ -11,6 +11,7 @@ import copy
 import base64
 import logging
 import requests
+import gevent.queue
 import urllib.parse
 from flask import Flask, request
 from gevent.pywsgi import WSGIServer
@@ -19,6 +20,26 @@ from gevent.pywsgi import WSGIServer
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 app = Flask(__name__)
+task_queue = gevent.queue.Queue()
+
+
+def handle_task_queue():
+    while True:
+        task = task_queue.get()
+
+        method = task['method']
+        url = task['url']
+        headers = task['headers']
+        body = task['body']
+        files = task['files']
+
+        header_string = '\n'.join([key + ':' + value for key, value in headers.items()])
+        logger.debug("sending request\n{} {}\n{}\n\n{}\n{}\n".format(method, url, header_string, body, files))
+        try:
+            requests.request(method=method, url=url, headers=headers, data=body, files=files,
+                             allow_redirects=False, timeout=5)
+        except:
+            pass
 
 
 class Fuzzer(object):
@@ -143,11 +164,13 @@ class Fuzzer(object):
         if 'Content-Length' in headers:
             headers.pop('Content-Length')
 
-        header_string = '\n'.join([key+':'+value for key, value in headers.items()])
-        logger.debug("sending request\n{} {}\n{}\n\n{}\n{}\n".format(method, url, header_string, body, files))
-
-        requests.request(method=method, url=url, headers=headers, data=body, files=files,
-                         allow_redirects=False, timeout=5)
+        task_queue.put({
+            'method': method,
+            'url': url,
+            'headers': headers,
+            'body': body,
+            'files': files
+        })
 
     @staticmethod
     def add_value(value):
@@ -279,5 +302,6 @@ def index():
 
 
 if __name__ == '__main__':
+    gevent.spawn(handle_task_queue)
     http_server = WSGIServer(('0.0.0.0', 9090), app)
     http_server.serve_forever()
