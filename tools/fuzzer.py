@@ -1,10 +1,12 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
+
 import gevent.monkey
 gevent.monkey.patch_all()
 
-
+import sys
 import json
 import zlib
 import copy
@@ -12,10 +14,17 @@ import base64
 import logging
 import requests
 import gevent.queue
-import urllib.parse
 from flask import Flask, request
 from gevent.pywsgi import WSGIServer
 
+
+PY2 = sys.version_info[0] == 2
+if not PY2:
+    unicode = str
+    from urllib.parse import quote, urlsplit, urlunsplit, parse_qsl
+else:
+    from urlparse import urlsplit, urlunsplit, parse_qsl
+    from urllib import quote
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -128,9 +137,9 @@ class Fuzzer(object):
         files = {}
 
         if fuzz_origin == 'query' and 'query' in req and req['query']:
-            urlspliter = urllib.parse.urlsplit(req['url'])
+            urlspliter = urlsplit(req['url'])
             query_string = Fuzzer.json_to_php_array_string(req['query'])
-            url = urllib.parse.urlunsplit((urlspliter.scheme, urlspliter.netloc,
+            url = urlunsplit((urlspliter.scheme, urlspliter.netloc,
                                            urlspliter.path, query_string, urlspliter.fragment))
         else:
             url = req['url']
@@ -142,7 +151,7 @@ class Fuzzer(object):
                 body = json.dumps(req['data'])
             elif 'multipart/form-data' in content_type:
                 body = {}
-                for key, value in urllib.parse.parse_qsl(Fuzzer.json_to_php_array_string(req['data'])):
+                for key, value in parse_qsl(Fuzzer.json_to_php_array_string(req['data'])):
                     body[key] = (None, value)
 
                 req['headers'].pop('Content-Type')
@@ -185,11 +194,11 @@ class Fuzzer(object):
     def fuzz_value(data):
         """
         >>> Fuzzer.fuzz_value({"a": "123"})
-        [{'a': '123\\'"'}, {'a': '123"'}, {'a': "123'"}, {'a': '123%25%2b'}, {'a': '123\\'"><xtanzi>./../xtanzi'}]
+        [{'a': '123\\'"><xtanzi>./../xtanzi'}]
         >>> Fuzzer.fuzz_value({'a': {"d": "x"}})
-        [{'a': {'d': 'x\\'"'}}, {'a': {'d': 'x"'}}, {'a': {'d': "x'"}}, {'a': {'d': 'x%25%2b'}}, {'a': {'d': 'x\\'"><xtanzi>./../xtanzi'}}]
+        [{'a': {'d': 'x\\'"><xtanzi>./../xtanzi'}}]
         >>> Fuzzer.fuzz_value({'a': ['x', 'y']})
-        [{'a': ['x\\'"', 'y']}, {'a': ['x"', 'y']}, {'a': ["x'", 'y']}, {'a': ['x%25%2b', 'y']}, {'a': ['x\\'"><xtanzi>./../xtanzi', 'y']}, {'a': ['x', 'y\\'"']}, {'a': ['x', 'y"']}, {'a': ['x', "y'"]}, {'a': ['x', 'y%25%2b']}, {'a': ['x', 'y\\'"><xtanzi>./../xtanzi']}]
+        [{'a': ['x\\'"><xtanzi>./../xtanzi', 'y']}, {'a': ['x', 'y\\'"><xtanzi>./../xtanzi']}]
         """
         reqs = []
 
@@ -207,7 +216,7 @@ class Fuzzer(object):
                         reqs.append(copy.deepcopy(data))
                         value[each_key] = each_value  # 还原
 
-            elif isinstance(value, str):
+            elif isinstance(value, unicode):
                 return Fuzzer.add_value(value)
 
         _fuzz_value(data)
@@ -253,8 +262,8 @@ class Fuzzer(object):
 
                 return d
 
-            elif isinstance(value, str):
-                return '=' + urllib.parse.quote(value)
+            elif isinstance(value, unicode):
+                return '=' + quote(value)
 
         d = []
         for i in data:
@@ -265,7 +274,7 @@ class Fuzzer(object):
             else:
                 d.append(i + result)
 
-        return '&'.join(d)
+        return '&'.join(sorted(d))
 
     @staticmethod
     def fuzz(_request):
@@ -295,6 +304,8 @@ def index():
         data = zlib.decompress(data)
     except:
         pass
+
+    data = data.decode('utf-8', errors='ignore')
     data = json.loads(data)
 
     Fuzzer.fuzz(data['request'])
