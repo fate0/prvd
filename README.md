@@ -70,7 +70,7 @@ docker run -d -e "PRVD_SENTRY_DSN={YOUR_SENTRY_DSN}" -p 80:80 fate0/prvd-dvwa
 
 ### 原理
 
-// TODO
+* [PHP 运行时漏洞检测](http://blog.fatezero.org/2018/11/11/prvd/)
 
 ### 引用
 
