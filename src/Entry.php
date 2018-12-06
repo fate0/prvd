@@ -13,6 +13,19 @@ $prvd_sentry_client = null;
 $prvd_fuzzer_client = null;
 
 
+if (isset($_SERVER['HTTP_PRVD_FUZZER'])) {
+    define("PRVD_IS_FUZZER_REQUEST", true);
+} else {
+    define("PRVD_IS_FUZZER_REQUEST", false);
+}
+
+if (isset($_SERVER['HTTP_X_SENTRY_AUTH'])) {
+    define("PRVD_IS_SENTRY_REQUEST", true);
+} else {
+    define("PRVD_IS_SENTRY_REQUEST", false);
+}
+
+
 function prvd_get_function($funcname) {
     if (function_exists(PRVD_RENAME_PREFIX.$funcname)) {
         return PRVD_RENAME_PREFIX.$funcname;
@@ -58,11 +71,14 @@ prvd_load_opcode(PRVD_ABSPATH."opcode/*.php");
 require(PRVD_ABSPATH."../vendor/autoload.php");
 require(PRVD_ABSPATH."Client.php");
 
-$prvd_sentry_client = new PRVD_Sentry_Client(PRVD_SENTRY_DSN);
-$prvd_fuzzer_client = new PRVD_Fuzzer_Client(PRVD_FUZZER_DSN);
+
+if (!PRVD_IS_SENTRY_REQUEST) {
+    $prvd_sentry_client = new PRVD_Sentry_Client(PRVD_SENTRY_DSN);
+    $prvd_fuzzer_client = new PRVD_Fuzzer_Client(PRVD_FUZZER_DSN);
+}
 
 
 // 如果 header 信息不是来源于 fuzzer，那就发送相关信息给 fuzzer
-if (PRVD_FUZZER_DSN && !isset($_SERVER['HTTP_PRVD_FUZZER'])) {
+if (PRVD_FUZZER_DSN && !PRVD_IS_FUZZER_REQUEST && !PRVD_IS_SENTRY_REQUEST) {
     $prvd_fuzzer_client->captureRequest();
 }
