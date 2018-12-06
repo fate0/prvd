@@ -111,7 +111,7 @@ class Fuzzer(object):
             for each_fuzz_data in self.add_value(file_info['name']):
                 fuzz_request = copy.deepcopy(self.request)
                 fuzz_request['files'][key]['name'] = each_fuzz_data
-                self.make_request(fuzz_request)
+                self.make_request(fuzz_request, 'body')
 
             # fuzz 文件内容
             for each_fuzz_data in self.add_value(''):
@@ -193,12 +193,8 @@ class Fuzzer(object):
     @staticmethod
     def fuzz_value(data):
         """
-        >>> Fuzzer.fuzz_value({"a": "123"})
-        [{'a': '123\\'"><xtanzi>./../xtanzi'}]
-        >>> Fuzzer.fuzz_value({'a': {"d": "x"}})
+        >>> Fuzzer.fuzz_value({'a': {"d": {"c": "x"}}})
         [{'a': {'d': 'x\\'"><xtanzi>./../xtanzi'}}]
-        >>> Fuzzer.fuzz_value({'a': ['x', 'y']})
-        [{'a': ['x\\'"><xtanzi>./../xtanzi', 'y']}, {'a': ['x', 'y\\'"><xtanzi>./../xtanzi']}]
         """
         reqs = []
 
