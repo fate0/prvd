@@ -27,6 +27,9 @@ RUN apt-get clean && \
     mv prvd-master /data/prvd && \
     mv DVWA-master/* /var/www/html/ && \
     chmod -R 777 /var/www/html/ && \
+    # 取消 dvwa checkToken
+    sed -i '/function checkToken/a return;' /var/www/html/dvwa/includes/dvwaPage.inc.php && \
+    cp /data/prvd/tools/fuzzer.php /var/www/html/ && \
     curl --silent --show-error https://getcomposer.org/installer | php && \
 #    COMPOSER_ALLOW_SUPERUSER=1 php composer.phar config repo.packagist composer https://packagist.phpcomposer.com -d /data/prvd/ && \
     COMPOSER_ALLOW_SUPERUSER=1 php composer.phar install -d /data/prvd/ --no-dev && \

@@ -2,9 +2,9 @@
 
 system("service mysql start");
 
-$PRVD_FUZZER_DSN = getenv("PRVD_FUZZER_DSN");
+$PRVD_FUZZER_DSN = getenv("PRVD_FUZZER_DSN") ?: "http://admin:password@localhost/fuzzer.php";
 $PRVD_SENTRY_DSN = getenv("PRVD_SENTRY_DSN");
-$PRVD_TAINT_ENABLE = getenv("PRVD_TAINT_ENABLE");
+$PRVD_TAINT_ENABLE = getenv("PRVD_TAINT_ENABLE") ?: "false";
 $PRVD_TANZI = getenv("PRVD_TANZI");
 
 $config_file = '/data/prvd/src/Config.php';
