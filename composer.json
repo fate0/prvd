@@ -13,7 +13,7 @@
   ],
 
   "require-dev": {
-    "phpunit/phpunit": "*"
+    "phpunit/phpunit": "7.2"
   },
 
   "require": {

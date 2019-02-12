@@ -24,12 +24,12 @@ before_script:
 
 script:
   - php -n -c travis-php.ini ./vendor/bin/phpunit -c phpunit.xml
+
+after_success:
   - docker build -t prvd-dvwa:latest ./dvwa
   - docker tag prvd-dvwa:latest fate0/prvd-dvwa:latest
   - docker build -t prvd:latest ./
   - docker tag prvd:latest fate0/prvd:latest
-
-after_success:
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
   - docker push fate0/prvd-dvwa:latest
   - docker push fate0/prvd:latest
