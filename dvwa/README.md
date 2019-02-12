@@ -1,20 +1,20 @@
 # prvd-dvwa
 
-## 介绍
+## Introduction
 
-prvd-dvwa 是一个安装了 prvd 的 dvwa 环境，用于简单地体验 prvd 的能力。
+prvd-dvwa is a dvwa environment with prvd installed, which is used to simply experience prvd.
 
 ![dvwa_sentry_index](https://raw.githubusercontent.com/fate0/prvd/master/artwork/dvwa_sentry_index.png)
 
 
-## 安装
+## Installation
 
 ```sh
 docker pull fate0/prvd-dvwa
 docker run -d -e "PRVD_SENTRY_DSN={YOUR_SENTRY_DSN}" -p 80:80 fate0/prvd-dvwa
 ```
 
-可设置的环境变量有
+The environment variables that can be set are
 
 * `PRVD_FUZZER_DSN`
 * `PRVD_SENTRY_DSN`
@@ -23,16 +23,18 @@ docker run -d -e "PRVD_SENTRY_DSN={YOUR_SENTRY_DSN}" -p 80:80 fate0/prvd-dvwa
 
 ## 漏洞
 
-prvd-dvwa 环境中，prvd 能够检测下面几种类型漏洞：
+In the prvd-dvwa environment, prvd is able to detect the following types of vulnerabilities:
 
 * Command Injection
 * File Inclusion
 * File Upload
 * SQL Injection
 * SQL Injection (Blind)
-* 部分 XSS
+* Partial XSS
 
-其中 taint 模式下也会有误报的情况，例如在 File Inclusion 关卡 impossible 难度的情况下：
+
+There are also false positives in taint mode, such as in the case of `File Inclusion` (impossible level):
+
 ```php
 
 <?php 
@@ -52,10 +54,10 @@ if( $file != "include.php" && $file != "file1.php" && $file != "file2.php" && $f
 ?> 
 ```
 
-虽然已经指定了具体文件名，但是并没有什么 filter 函数将 `$file` 变量上的 flag 给清除了，
-所以就产生了一个误报。
+There is no filter function to clear the flag on the `$file` variable.
+So there was a false positive.
 
-taint 模式也会有漏报的情况，例如在 SQL Injection 关卡 medium 难度的情况下：
+There is also a false negative in the taint mode, such as in the case of the `SQL Injection` (medium level):
 
 ```php
 <?php
@@ -75,9 +77,10 @@ if( isset( $_POST[ 'Submit' ] ) ) {
 }
 ```
 
-`mysqli_real_escape_string` 会将变量的 flag 给去除掉，这是很正常的情况，
-但是 SQL 语句中并没有使用引号对 `$id` 包围，所以就产生了一个漏报。
+`mysqli_real_escape_string` will remove the flag of the variable, which is normal.
+However, the SQL statement does not use quotes to surround `$id`, so this is a false negative.
 
-同样 payload 模式也会有漏报的情况，具体不再描述。
+Similarly, the payload mode will also have a false negative, which will not be described.
 
-其他类型的漏洞，例如在客户端上的漏洞、服务器端上逻辑类型的漏洞，prvd 均没办法检测。
+Other types of vulnerabilities, such as vulnerabilities on the client side and logical types of 
+vulnerabilities on the server side, are not detectable by prvd.
