@@ -18,6 +18,6 @@
 
   "require": {
     "php": "^7.0",
-    "sentry/sentry": "*"
+    "sentry/sentry": "1.10"
   }
 }
